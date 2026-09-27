@@ -42,6 +42,14 @@ A documentação interativa fica em http://127.0.0.1:8000/docs
 
 ## Testes
 
+Os testes usam um banco separado. Crie ele uma única vez:
+
+```bash
+docker compose exec db createdb -U layer layer_test
+```
+
+Depois rode:
+
 ```bash
 python -m pytest -v
 ```
