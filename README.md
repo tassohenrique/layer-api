@@ -27,6 +27,7 @@ cp .env.example .env
 
 # Banco de dados
 docker compose up -d
+alembic upgrade head
 
 # Ambiente Python
 python -m venv .venv
