@@ -2,6 +2,13 @@ import pytest
 
 
 @pytest.fixture
+def client(client, admin_headers):
+    """Neste arquivo, todas as requisições são feitas como administrador."""
+    client.headers.update(admin_headers)
+    return client
+
+
+@pytest.fixture
 def brand(client):
     return client.post("/brands", json={"name": "Dior", "country": "França"}).json()
 

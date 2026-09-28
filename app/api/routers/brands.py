@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import require_admin
 from app.db.session import get_db
 from app.repositories.brand import BrandRepository
 from app.schemas.brand import BrandCreate, BrandRead, BrandUpdate
@@ -34,19 +35,30 @@ def get_brand(brand_id: int, service: ServiceDep):
     return service.get_brand(brand_id)
 
 
-@router.post("", response_model=BrandRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=BrandRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
+)
 def create_brand(data: BrandCreate, service: ServiceDep):
-    """Cadastra uma nova marca."""
+    """Cadastra uma nova marca. Requer administrador."""
     return service.create_brand(data)
 
 
-@router.patch("/{brand_id}", response_model=BrandRead)
+@router.patch(
+    "/{brand_id}", response_model=BrandRead, dependencies=[Depends(require_admin)]
+)
 def update_brand(brand_id: int, data: BrandUpdate, service: ServiceDep):
-    """Edita uma marca. Só os campos enviados são alterados."""
+    """Edita uma marca. Só os campos enviados são alterados. Requer administrador."""
     return service.update_brand(brand_id, data)
 
 
-@router.delete("/{brand_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{brand_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_admin)],
+)
 def delete_brand(brand_id: int, service: ServiceDep) -> None:
-    """Apaga uma marca."""
+    """Apaga uma marca. Requer administrador."""
     service.delete_brand(brand_id)

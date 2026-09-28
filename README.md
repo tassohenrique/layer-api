@@ -38,6 +38,15 @@ pip install -r requirements-dev.txt
 fastapi dev app/main.py
 ```
 
+## Criando um administrador
+
+Rotas de escrita (cadastrar, editar e apagar marcas, notas e perfumes) exigem um usuário administrador. Para criar um, ou promover um usuário existente:
+
+```bash
+python -m scripts.create_admin --email admin@exemplo.com --name "Admin"
+```
+
+
 A documentação interativa fica em http://127.0.0.1:8000/docs
 
 ## Testes

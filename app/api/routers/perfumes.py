@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import require_admin
 from app.db.session import get_db
 from app.repositories.brand import BrandRepository
 from app.repositories.note import NoteRepository
@@ -41,19 +42,30 @@ def get_perfume(perfume_id: int, service: ServiceDep):
     return service.get_perfume(perfume_id)
 
 
-@router.post("", response_model=PerfumeRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=PerfumeRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
+)
 def create_perfume(data: PerfumeCreate, service: ServiceDep):
-    """Cadastra um perfume, já com suas notas por camada."""
+    """Cadastra um perfume, já com suas notas por camada. Requer administrador."""
     return service.create_perfume(data)
 
 
-@router.patch("/{perfume_id}", response_model=PerfumeRead)
+@router.patch(
+    "/{perfume_id}", response_model=PerfumeRead, dependencies=[Depends(require_admin)]
+)
 def update_perfume(perfume_id: int, data: PerfumeUpdate, service: ServiceDep):
-    """Edita um perfume. Se 'notes' for enviado, substitui todas as notas."""
+    """Edita um perfume. Se 'notes' for enviado, substitui todas. Requer administrador."""
     return service.update_perfume(perfume_id, data)
 
 
-@router.delete("/{perfume_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{perfume_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_admin)],
+)
 def delete_perfume(perfume_id: int, service: ServiceDep) -> None:
-    """Apaga um perfume e suas ligações com as notas."""
+    """Apaga um perfume e suas ligações com as notas. Requer administrador."""
     service.delete_perfume(perfume_id)

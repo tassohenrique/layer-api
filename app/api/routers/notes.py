@@ -3,6 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import require_admin
 from app.db.session import get_db
 from app.repositories.note import NoteRepository
 from app.schemas.note import NoteCreate, NoteRead, NoteUpdate
@@ -34,19 +35,30 @@ def get_note(note_id: int, service: ServiceDep):
     return service.get_note(note_id)
 
 
-@router.post("", response_model=NoteRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=NoteRead,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
+)
 def create_note(data: NoteCreate, service: ServiceDep):
-    """Cadastra uma nova nota olfativa."""
+    """Cadastra uma nova nota olfativa. Requer administrador."""
     return service.create_note(data)
 
 
-@router.patch("/{note_id}", response_model=NoteRead)
+@router.patch(
+    "/{note_id}", response_model=NoteRead, dependencies=[Depends(require_admin)]
+)
 def update_note(note_id: int, data: NoteUpdate, service: ServiceDep):
-    """Edita uma nota."""
+    """Edita uma nota. Requer administrador."""
     return service.update_note(note_id, data)
 
 
-@router.delete("/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{note_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_admin)],
+)
 def delete_note(note_id: int, service: ServiceDep) -> None:
-    """Apaga uma nota."""
+    """Apaga uma nota. Requer administrador."""
     service.delete_note(note_id)

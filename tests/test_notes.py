@@ -1,3 +1,13 @@
+import pytest
+
+
+@pytest.fixture
+def client(client, admin_headers):
+    """Neste arquivo, todas as requisições são feitas como administrador."""
+    client.headers.update(admin_headers)
+    return client
+
+
 def create_note(client, name="Bergamota"):
     response = client.post("/notes", json={"name": name})
     assert response.status_code == 201

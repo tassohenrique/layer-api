@@ -1,3 +1,13 @@
+import pytest
+
+
+@pytest.fixture
+def client(client, admin_headers):
+    """Neste arquivo, todas as requisições são feitas como administrador."""
+    client.headers.update(admin_headers)
+    return client
+
+
 def create_brand(client, name="Dior", country="França"):
     response = client.post("/brands", json={"name": name, "country": country})
     assert response.status_code == 201

@@ -5,9 +5,11 @@ from sqlalchemy.orm import sessionmaker
 
 from app import models  # noqa: F401
 from app.core.config import settings
+from app.core.security import create_access_token, hash_password
 from app.db.base import Base
 from app.db.session import get_db
 from app.main import app
+from app.models import User, UserRole
 
 engine = create_engine(settings.test_database_url)
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
@@ -40,3 +42,28 @@ def client(db_session):
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+def create_user_headers(db_session, email, role):
+    user = User(
+        email=email,
+        name="Usuário de Teste",
+        hashed_password=hash_password("senha12345"),
+        role=role,
+    )
+    db_session.add(user)
+    db_session.commit()
+    token = create_access_token(str(user.id))
+    return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def admin_headers(db_session):
+    """Cabeçalho de autenticação de um usuário administrador."""
+    return create_user_headers(db_session, "admin@teste.com", UserRole.ADMIN)
+
+
+@pytest.fixture
+def user_headers(db_session):
+    """Cabeçalho de autenticação de um usuário comum."""
+    return create_user_headers(db_session, "usuario@teste.com", UserRole.USER)
