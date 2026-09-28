@@ -70,3 +70,11 @@ def test_delete_note(client):
 
     response = client.get(f"/notes/{note['id']}")
     assert response.status_code == 404
+
+
+def test_update_note_with_null_name_returns_422(client):
+    note = create_note(client)
+
+    response = client.patch(f"/notes/{note['id']}", json={"name": None})
+
+    assert response.status_code == 422

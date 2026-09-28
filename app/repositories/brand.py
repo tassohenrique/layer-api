@@ -1,7 +1,7 @@
-from sqlalchemy import func, select
+from sqlalchemy import exists, func, select
 from sqlalchemy.orm import Session
 
-from app.models import Brand
+from app.models import Brand, Perfume
 from app.schemas.brand import BrandCreate, BrandUpdate
 
 
@@ -37,3 +37,7 @@ class BrandRepository:
     def delete(self, brand: Brand) -> None:
         self.db.delete(brand)
         self.db.commit()
+
+    def has_perfumes(self, brand_id: int) -> bool:
+        stmt = select(exists().where(Perfume.brand_id == brand_id))
+        return bool(self.db.scalar(stmt))

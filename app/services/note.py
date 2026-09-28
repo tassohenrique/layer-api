@@ -33,4 +33,8 @@ class NoteService:
 
     def delete_note(self, note_id: int) -> None:
         note = self.get_note(note_id)
+        if self.repository.is_in_use(note.id):
+            raise ConflictError(
+                f"Note {note_id} is used by perfumes and cannot be deleted"
+            )
         self.repository.delete(note)

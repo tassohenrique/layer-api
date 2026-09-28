@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from app.api.routers import brands, health, notes
+from app.api.routers import brands, health, notes, perfumes
 from app.core.exceptions import AppError
 
 app = FastAPI(
@@ -19,3 +19,4 @@ async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
 app.include_router(health.router)
 app.include_router(brands.router)
 app.include_router(notes.router)
+app.include_router(perfumes.router)

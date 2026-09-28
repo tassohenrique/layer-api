@@ -83,3 +83,11 @@ def test_delete_brand(client):
 
     response = client.get(f"/brands/{brand['id']}")
     assert response.status_code == 404
+
+
+def test_update_brand_with_null_name_returns_422(client):
+    brand = create_brand(client)
+
+    response = client.patch(f"/brands/{brand['id']}", json={"name": None})
+
+    assert response.status_code == 422

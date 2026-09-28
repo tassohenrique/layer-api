@@ -33,4 +33,6 @@ class BrandService:
 
     def delete_brand(self, brand_id: int) -> None:
         brand = self.get_brand(brand_id)
+        if self.repository.has_perfumes(brand.id):
+            raise ConflictError(f"Brand {brand_id} has perfumes and cannot be deleted")
         self.repository.delete(brand)

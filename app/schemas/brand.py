@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class BrandBase(BaseModel):
@@ -17,6 +17,13 @@ class BrandUpdate(BaseModel):
 
     name: str | None = Field(default=None, min_length=1, max_length=100)
     country: str | None = Field(default=None, max_length=60)
+
+    @field_validator("name")
+    @classmethod
+    def reject_explicit_null(cls, value):
+        if value is None:
+            raise ValueError("This field cannot be null")
+        return value
 
 
 class BrandRead(BrandBase):
