@@ -2,6 +2,7 @@ from app.models.brand import Brand
 from app.models.enums import Concentration, Gender, NoteLayer, UserRole
 from app.models.note import Note
 from app.models.perfume import Perfume, PerfumeNote
+from app.models.review import Review
 from app.models.user import User
 
 __all__ = [
@@ -12,6 +13,7 @@ __all__ = [
     "NoteLayer",
     "Perfume",
     "PerfumeNote",
+    "Review",
     "User",
     "UserRole",
 ]
