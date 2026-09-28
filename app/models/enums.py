@@ -19,3 +19,8 @@ class NoteLayer(StrEnum):
     TOP = "top"  # notas de topo (saída)
     HEART = "heart"  # notas de coração (corpo)
     BASE = "base"  # notas de fundo
+
+
+class UserRole(StrEnum):
+    USER = "user"
+    ADMIN = "admin"
