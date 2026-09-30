@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
@@ -31,9 +31,13 @@ def list_perfumes(
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
     brand_id: Annotated[int | None, Query(description="Filtra por marca")] = None,
+    sort: Annotated[
+        Literal["name", "rating"],
+        Query(description="Ordena por nome ou pela média das avaliações"),
+    ] = "name",
 ):
-    """Lista os perfumes em ordem alfabética, com paginação e filtro por marca."""
-    return service.list_perfumes(skip, limit, brand_id)
+    """Lista os perfumes com paginação, filtro por marca e ordenação."""
+    return service.list_perfumes(skip, limit, brand_id, sort)
 
 
 @router.get("/{perfume_id}", response_model=PerfumeRead)

@@ -90,3 +90,5 @@ class PerfumeRead(BaseModel):
     created_at: datetime
     brand: BrandSummary
     notes: list[PerfumeNoteRead]
+    average_rating: float | None
+    review_count: int

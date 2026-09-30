@@ -9,19 +9,39 @@ class PerfumeRepository:
         self.db = db
 
     def _query_with_relations(self):
-        """Consulta base que já traz marca e notas, evitando o problema N+1."""
-        return select(Perfume).options(
-            selectinload(Perfume.brand),
-            selectinload(Perfume.notes).selectinload(PerfumeNote.note),
+        """Consulta base que já traz marca e notas, evitando o problema N+1.
+
+        populate_existing garante que a média e a contagem de reviews venham
+        atualizadas, mesmo se o perfume já estiver carregado na sessão.
+        """
+        return (
+            select(Perfume)
+            .options(
+                selectinload(Perfume.brand),
+                selectinload(Perfume.notes).selectinload(PerfumeNote.note),
+            )
+            .execution_options(populate_existing=True)
         )
 
     def list_all(
-        self, skip: int, limit: int, brand_id: int | None = None
+        self,
+        skip: int,
+        limit: int,
+        brand_id: int | None = None,
+        sort: str = "name",
     ) -> list[Perfume]:
         stmt = self._query_with_relations()
         if brand_id is not None:
             stmt = stmt.where(Perfume.brand_id == brand_id)
-        stmt = stmt.order_by(Perfume.name).offset(skip).limit(limit)
+
+        if sort == "rating":
+            stmt = stmt.order_by(
+                Perfume.average_rating.desc().nulls_last(), Perfume.name
+            )
+        else:
+            stmt = stmt.order_by(Perfume.name)
+
+        stmt = stmt.offset(skip).limit(limit)
         return list(self.db.scalars(stmt))
 
     def get(self, perfume_id: int) -> Perfume | None:

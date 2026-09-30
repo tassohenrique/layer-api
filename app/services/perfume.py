@@ -18,9 +18,9 @@ class PerfumeService:
         self.notes = notes
 
     def list_perfumes(
-        self, skip: int, limit: int, brand_id: int | None = None
+        self, skip: int, limit: int, brand_id: int | None = None, sort: str = "name"
     ) -> list[Perfume]:
-        return self.perfumes.list_all(skip, limit, brand_id)
+        return self.perfumes.list_all(skip, limit, brand_id, sort)
 
     def get_perfume(self, perfume_id: int) -> Perfume:
         perfume = self.perfumes.get(perfume_id)
