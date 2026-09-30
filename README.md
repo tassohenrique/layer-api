@@ -1,6 +1,11 @@
 # Layer API
 API REST de reviews de perfumes, inspirada no Fragrantica, construída com FastAPI e PostgreSQL.
 
+
+**🚀 API no ar:** [layer-api-xxxx.onrender.com/docs](https://layer-api-xxxx.onrender.com/docs)
+
+> A hospedagem é gratuita e entra em repouso sem uso. A primeira requisição pode levar cerca de um minuto; depois disso, responde normalmente.
+
 [![CI](https://github.com/tassohenrique/layer-api/actions/workflows/ci.yml/badge.svg)](https://github.com/tassohenrique/layer-api/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.14-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.141-009688)
@@ -18,6 +23,7 @@ API REST de reviews de perfumes, inspirada no Fragrantica, construída com FastA
 - Docker / Docker Compose
 - pytest
 - Ruff
+- Deploy: Render (API em container Docker) + Neon (PostgreSQL gerenciado)
 
 ## Como rodar localmente
 
