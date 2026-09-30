@@ -67,3 +67,9 @@ def admin_headers(db_session):
 def user_headers(db_session):
     """Cabeçalho de autenticação de um usuário comum."""
     return create_user_headers(db_session, "usuario@teste.com", UserRole.USER)
+
+
+@pytest.fixture
+def other_user_headers(db_session):
+    """Cabeçalho de autenticação de um segundo usuário comum."""
+    return create_user_headers(db_session, "outro@teste.com", UserRole.USER)
