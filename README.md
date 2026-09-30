@@ -1,6 +1,11 @@
 # Layer API
-
 API REST de reviews de perfumes, inspirada no Fragrantica, construída com FastAPI e PostgreSQL.
+
+[![CI](https://github.com/tassohenrique/layer-api/actions/workflows/ci.yml/badge.svg)](https://github.com/tassohenrique/layer-api/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/python-3.14-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.141-009688)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-336791)
+![Cobertura](https://img.shields.io/badge/cobertura-99%25-brightgreen)
 
 > 🚧 Projeto em desenvolvimento
 
@@ -62,3 +67,11 @@ Depois rode:
 ```bash
 python -m pytest -v
 ```
+
+Para ver a cobertura de testes:
+
+```bash
+python -m pytest --cov=app --cov-report=term-missing
+```
+
+A cada push na branch `main`, o GitHub Actions roda o lint, aplica as migrations num banco limpo e executa todos os testes.
