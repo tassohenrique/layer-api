@@ -225,3 +225,9 @@ def test_list_perfumes_sorted_by_rating_puts_unrated_last(
         "Bleu",
         "Egoiste",
     ]
+
+
+def test_update_missing_review_returns_404(client, user_headers):
+    response = client.patch("/reviews/999999", json={"rating": 5}, headers=user_headers)
+
+    assert response.status_code == 404

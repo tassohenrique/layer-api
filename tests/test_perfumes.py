@@ -189,3 +189,34 @@ def test_delete_note_in_use_returns_409(client, brand, notes):
     response = client.delete(f"/notes/{notes[0]['id']}")
 
     assert response.status_code == 409
+
+
+def test_update_perfume_to_existing_name_in_same_brand_returns_409(
+    client, brand, notes
+):
+    create_perfume(client, brand, notes, name="Sauvage")
+    other = create_perfume(client, brand, notes, name="Fahrenheit")
+
+    response = client.patch(f"/perfumes/{other['id']}", json={"name": "SAUVAGE"})
+
+    assert response.status_code == 409
+
+
+def test_update_perfume_can_move_to_another_brand(client, brand, notes):
+    perfume = create_perfume(client, brand, notes)
+    other_brand = client.post("/brands", json={"name": "Chanel"}).json()
+
+    response = client.patch(
+        f"/perfumes/{perfume['id']}", json={"brand_id": other_brand["id"]}
+    )
+
+    assert response.status_code == 200
+    assert response.json()["brand"]["name"] == "Chanel"
+
+
+def test_update_perfume_to_missing_brand_returns_404(client, brand, notes):
+    perfume = create_perfume(client, brand, notes)
+
+    response = client.patch(f"/perfumes/{perfume['id']}", json={"brand_id": 999999})
+
+    assert response.status_code == 404

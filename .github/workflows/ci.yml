@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: Instalar Ruff
+        run: pip install ruff
+
+      - name: Verificar erros
+        run: ruff check .
+
+      - name: Verificar formatação
+        run: ruff format --check .
+
+  test:
+    name: Testes (pytest)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: layer
+          POSTGRES_PASSWORD: layer_ci_password
+          POSTGRES_DB: layer
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U layer"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql+psycopg://layer:layer_ci_password@localhost:5432/layer
+      TEST_DATABASE_URL: postgresql+psycopg://layer:layer_ci_password@localhost:5432/layer_test
+      JWT_SECRET_KEY: ci-only-secret-key-never-used-in-production-0123456789
+      PGPASSWORD: layer_ci_password
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements-dev.txt
+
+      - name: Criar banco de testes
+        run: psql -h localhost -U layer -d layer -c "CREATE DATABASE layer_test;"
+
+      - name: Aplicar migrations
+        run: alembic upgrade head
+
+      - name: Rodar testes
+        run: python -m pytest -q --cov=app --cov-report=term-missing
