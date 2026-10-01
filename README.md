@@ -118,8 +118,13 @@ A documentação completa e interativa fica em [`/docs`](https://layer-api.onren
 **Notas por camada.** A relação entre perfumes e notas é um muitos-para-muitos com atributo extra (a camada), modelado como association object com chave primária composta, impedindo a mesma nota duas vezes no mesmo perfume.
 
 ## Como rodar localmente
-
 Pré-requisito: Docker.
+
+Para popular o banco com um catálogo de exemplo (marcas, perfumes, notas e reviews):
+
+```bash
+docker compose exec api python -m scripts.seed --with-reviews
+```
 
 ```bash
 git clone https://github.com/tassohenrique/layer-api.git
